@@ -1,0 +1,15 @@
+% Example Matlab Commands over TCP/IP port
+% Note: The following commands are VERY basic examples. To work properly they need to be incorporated into more sophisticated code. For example, in the code snippet below where 100 characters are read from the ports, these commands will WAIT for  100 characters to be available. This waiting behaivor may NOT be the desired behavior.
+
+% Open data and command port
+data_port = tcpclient('localhost', 20020)
+cmd_port = tcpclient('localhost', 20021)
+
+% Turn on the center LED to full brightness
+write(cmd_port,uint8(['wled,0,1' newline]))
+
+% To read back response to command
+char(read(cmd_port,100))
+
+% To read back 100 chars of data
+char(read(data_port,100))

@@ -1,0 +1,90 @@
+<html>
+<h2>Notes</h2>
+<ul>
+<li>% (percent sign) denotes an in-line comment.</li>
+<li>Each line in the command script (except comments) should have no more than 250 characters.</li>
+<li>A maximum of 1100 in-memory commands can be saved (memory is erased on power-cycle)</li>
+<li>A maximum of 20 variables can be saved (variables are erased on power-cycle)</li>
+</ul>
+                                                                             <hr>
+<h2>Immediate Write Commands (processed by device)</h2>
+<b>wled,&lt;lednum&gt;,&lt;brightness&gt;</b>                                <br>
+&nbsp;&nbsp; Sets the brightness of an LED.                                  <br>
+&nbsp;&nbsp; &#8226; lednum - an integer, 0=center, 1=left, 5=right          <br>
+&nbsp;&nbsp; &#8226; brightness - a float ranging over 0-1, 0 is off, 1 is full on <br>
+<b>wbncmode,&lt;mode&gt;</b>                                                 <br>
+&nbsp;&nbsp; Sets the BNC to either read voltage or output voltage.          <br>
+&nbsp;&nbsp; &#8226; mode - 0=INPUT, 1=OUTPUT                                <br>
+<b>wbnc,&lt;volts&gt;</b>                                                    <br>
+&nbsp;&nbsp; If the BNC is in OUTPUT mode, sets its output voltage.          <br>
+&nbsp;&nbsp; If the BNC is in INPUT mode, nothing happens.                   <br>
+&nbsp;&nbsp; &#8226; volts - a float, voltage output                         <br>
+                                                                             <hr>
+<h2>Log Commands (processed by GUI)</h2>
+<b>log,open,&lt;filename&gt;</b>                                             <br>
+&nbsp;&nbsp; &nbsp;&nbsp; Open a log file and start logging data.            <br>
+&nbsp;&nbsp; &#8226; filename - the name of the log file, i.e. 'log'. Do NOT use a path. Do NOT add an extension.            <br>
+<b>log,close</b>                                                             <br>
+&nbsp;&nbsp; Close any open log file.                                        <br>
+                                                                             <hr>
+<h2>Staircase Test Commands (processed by device)</h2>
+<b>start_stair,&lt;base_bright&gt;,&lt;target_bright&gt;,&lt;target_bright&gt;,      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;num_trials&gt;,&lt;target_latency&gt;,&lt;isi_min&gt;,&lt;isi_max&gt;,&lt;num_miss&gt;,&lt;num_hit&gt;</b>  <br>
+&nbsp;&nbsp; Starts the staircase test. All LEDs turn on to &lt;base_bright&gt;. One of the LEDs that is NOT the center LED changes to brightness &lt;base_bright&gt; + &lt;target_bright&gt; for &lt;target_latency&gt; number of ms.          <br> 
+The results of a completed staircase test are stored in variables "a" and "b". a = &lt;base_bright&gt;, b = &lt;base_bright&gt; + (average of last 10 &lt;target_bright&gt;)                                    <br>
+&nbsp;&nbsp; &#8226; base_bright -  (a floating point number from 0-1) <br>
+&nbsp;&nbsp; &#8226; target_bright -  (a floating point number from 0-1) <br>
+&nbsp;&nbsp; &#8226; step_size - Starting size of the brightness change. (a floating point number from 0-1)   <br>
+&nbsp;&nbsp; &#8226; num_trials - Number of trials (Integer from 0 to 2^32)  <br>
+&nbsp;&nbsp; &#8226; target_latency - Duration of the target stimulus in ms. (Integer from 0 to 2^32)  <br>
+&nbsp;&nbsp; &#8226; isi_min - Minimum duration of the inter-stimulus interval in ms. (Integer from 0 to 2^32)    <br>
+&nbsp;&nbsp; &#8226; isi_max - Maximum duration of the inter-stimulus interval in ms. (Integer from 0 to 2^32)    <br>
+&nbsp;&nbsp; &#8226; num_miss - Number of subsequent misses needed until &lt;target_bright&gt; is increased by &lt;step_size&gt;. (Integer from 0 to 2^32)    <br>
+&nbsp;&nbsp; &#8226; num_hit - Number of subsequent hits needed until &lt;target_bright&gt; is decreased by &lt;step_size&gt;.   <br>
+&nbsp;&nbsp; &nbsp;&nbsp; Use together with num_miss to control the target performance of the staircase  <br>
+&nbsp;&nbsp; &nbsp;&nbsp; For example, num_miss = 1 & num_hit = 2 would result in a 2 down 1 up staircase   <br>
+&nbsp;&nbsp; &nbsp;&nbsp; targeting ~70% performance.  (Integer from 0 to 2^32)     <br>
+<b>stop_stair</b>                                                            <br>
+&nbsp;&nbsp; Stops the staircase test.                                       <br>
+                                                                             <hr>
+<h2>Variable Commands (processed by device)</h2>
+<b>set_var,&lt;name&gt;,&lt;value&gt;</b>                                    <br>
+&nbsp;&nbsp; Set the variable named &lt;name&gt; to value &lt;value&gt;. Only 20 variables can exist at any given time. If the variable name is already in use, its value is overwritten <br>
+&nbsp;&nbsp; &#8226; name - can only consist of characters a-z, A-Z, 0-9, and underscore. The first character cannot be a digit. <br>
+&nbsp;&nbsp; &nbsp;&nbsp; The entire name must be under 100 characters long. (i.e. 'var', 'var1', '_var', '_123', but NOT '2var')<br>
+&nbsp;&nbsp; &#8226; value - can be integers or floating point (i.e. -1, -2, 1.2, -7.8, 1.34e5, 1.34E-5).<br>
+<b>get_var,&lt;name&gt;</b>                                                  <br>
+&nbsp;&nbsp; Get the variable named &lt;name&gt;. If no such variable exists, will return "variable does not exist"                           <br>
+<b>delete_var,&lt;name&gt;</b>                                               <br>
+&nbsp;&nbsp; Delete the variable named &lt;name&gt;.                         <br>
+<b>delete_vars</b>                                                           <br>
+&nbsp;&nbsp; Delete all variables.                                           <br>
+                                                                             <hr>
+<h2>Stimulus Commands (processed by device)</h2>
+<b>clear_stim</b>                                                            <br>
+&nbsp;&nbsp; Clears 'commands in memory'.                                    <br>
+<b>start_stim</b>                                                            <br>
+&nbsp;&nbsp; Start executing 'commands in memory'.                           <br>
+<b>stop_stim</b>                                                             <br>
+&nbsp;&nbsp; Stop executing 'commands in memory' and return to first command.<br>
+<b>pause_stim</b>                                                            <br>
+&nbsp;&nbsp; Pause executing 'commands in memory'. Any running 'command in memory' is halted.  <br>
+&nbsp;&nbsp; Use 'Start' to continue execution with the next 'command in memory'.         <br>
+<b>*stim,&lt;led0&gt;,&lt;led1&gt;,&lt;led2&gt;,&lt;led3&gt;,&lt;led4&gt;,&lt;led5&gt;,&lt;dur&gt;</b><br>
+&nbsp;&nbsp; <i>This is a command in memory.</i>                             <br>
+&nbsp;&nbsp; Sets brightness of all the LEDs, and the duration               <br>
+&nbsp;&nbsp; that brightness will be maintained.                             <br>
+&nbsp;&nbsp; &#8226; led0 - a float ranging over 0-1, 0 is off. 1 is full on, OR the name of a variable <br>
+&nbsp;&nbsp; &#8226; dur - an integer ranging from 0 to 2^32 ms, OR the name of a variable.             <br>
+<b>*wait,&lt;dur&gt;</b>                                                     <br>
+&nbsp;&nbsp; <i>This is a command in memory.</i>                             <br>
+&nbsp;&nbsp; Waits a given number of milliseconds                            <br>
+&nbsp;&nbsp; &#8226; dur - an integer ranging from 0 to 2^32 ms, OR the name of a variable.             <br>
+<b>*trig,&lt;on-level&gt;,&lt;dur&gt;</b>                                    <br>
+&nbsp;&nbsp; <i>This is a command in memory.</i>                             <br>
+&nbsp;&nbsp; If the BNC is in OUTPUT mode, sets the BNC output voltage for a given duration.  <br>
+&nbsp;&nbsp; When the duration ends, the output voltage returns to the level before this command was executed.   <br>
+&nbsp;&nbsp; &#8226; on-level - The volts to output on the BNC, OR the name of a variable.              <br>
+&nbsp;&nbsp; &#8226; dur - an integer ranging from 0 to 2^32 ms, OR the name of a variable.           <br>
+&nbsp;&nbsp; &nbsp;&nbsp; If the duration is 0, the output voltage stays at &lt;on-level&gt; volts.                   <br>
+</html>

@@ -1,0 +1,78 @@
+% See the "Cmd Ref." button in 
+% "TACS Challenge Controller" GUI 
+% for full command documentation
+%
+% NOTES:
+% * "percent sign" denotes a comment
+% * Only 1000 in-memory commands can be saved.
+% * Each line below should have no more than 
+%     250 characters
+
+% Delete all variables
+delete_vars
+
+% Run staircase, with logging
+% Upon completion, staircase now stores
+% its results in two variables "a" and "b".
+% a = <base_brightness>
+% b = <base_brightness> + 
+%     (average of last 10 <target_brightness>)
+log,open,staircase
+start_stair,0.588,-0.176,-0.039,40,25,2000,4000,1,2
+log,close
+
+% Open the stimulus log file
+log,open,stimulus
+
+% * Set the BNC (aka trigger) to output mode
+wbncmode,1   % Example trailing comment
+
+% Declare variables for stimulus duration
+set_var,trig_high,3.3
+set_var,trig_med,2
+set_var,trig_off,0
+set_var,_100ms,100
+set_var,_1000ms,1000
+set_var,now,0
+set_var,stim_base_dur,1000
+set_var,stim_dur,10
+
+% Clear all commands "in-memory"
+%   (commands that start with asterick)
+clear_stim
+
+% Example in-memory trigger 
+%   output 3.3 V for 100 ms before 
+%   returning to prev value.
+*trig,trig_high,_100ms
+% The following wait is NOT needed
+%   but helps emphasize that the trigger
+%   does return to the previous value.
+*wait,_100ms
+
+% Alternate example in-memory trigger
+%   output 2V for 1000 ms before returning
+%   to 0V, but use the *wait command
+%   instead of the trigger command's
+%   built-in duration value.
+*trig,trig_med,now
+*wait,_1000ms
+*trig,trig_off,now
+
+% Example in-memory LED stimulus
+%   Each LED is set to decreasing brightness 
+%   for 1000 ms.
+*stim,a,a,a,a,a,a,stim_base_dur
+*stim,a,b,a,a,a,a,stim_dur
+
+*stim,a,a,a,a,a,a,stim_base_dur
+*stim,a,a,a,a,b,a,stim_dur
+
+*stim,a,a,a,a,a,a,stim_base_dur
+*stim,a,a,b,a,a,a,stim_dur
+
+% Start executing commands saved in-memory
+start_stim
+
+% Close the stimulus log file
+log,close
