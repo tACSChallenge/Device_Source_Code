@@ -1,0 +1,13 @@
+#ifndef _ERR_CODES_H_
+#define _ERR_CODES_H_
+
+
+#define ERROR_NONE 0
+#define ERROR_INDEX_OUT_OF_BOUNDS 1
+#define ERROR_CMD_CODE_NOT_FOUND 2
+#define ERROR_INVALID_CRC 3
+#define ERROR_INVALID_CHANNEL 4
+#define ERROR_DOES_NOT_EXIST 6
+
+
+#endif //_ERR_CODES_H_
