@@ -466,7 +466,7 @@ DataLogElement defaultDataLogElement = {.currus = 0,};
 #define LOG_BUFFER_CAPACITY 100
 CircularBuffer<DataLogElement, LOG_BUFFER_CAPACITY> data_log_buffer;
 
-void log (){
+void logData (){
   DataLogElement element;
   element.currus = micros();
   element.left_button = readLeftButton();
@@ -538,7 +538,7 @@ void setup() {
   // seed the random value
   randomSeed(analogRead(PIN_TACS_ANALOG_IN));
 
-  timer.begin(log,1000);
+  timer.begin(logData,1000);
 }
 
 void loop() {
